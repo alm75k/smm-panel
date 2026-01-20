@@ -7,7 +7,6 @@ session_start();
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../core/api.php';
 
-// Vérifie si l'utilisateur est connecté
 if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
     exit;
@@ -16,25 +15,20 @@ if (!isset($_SESSION['user_id'])) {
 $userId = $_SESSION['user_id'];
 $api = new Api();
 
-// Récupération du solde actuel
 $balanceInfo = $api->balance();
 $balance = $balanceInfo->balance ?? 0;
 
-// Récupérer tous les services pour le dropdown
 $servicesStmt = $pdo->query("SELECT * FROM services ORDER BY name ASC");
 $servicesList = $servicesStmt->fetchAll();
 
-// Vérification si un service a été pré-sélectionné (via GET)
 $selectedServiceId = intval($_GET['service_id'] ?? 0);
 
-// Gestion du formulaire
 $message = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $serviceId = intval($_POST['service_id']);
     $quantity = intval($_POST['quantity']);
     $link = $_POST['link'] ?? '';
 
-    // Vérifier que le service existe
     $stmt = $pdo->prepare("SELECT * FROM services WHERE service_id = ?");
     $stmt->execute([$serviceId]);
     $service = $stmt->fetch();
@@ -44,21 +38,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif ($quantity <= 0) {
         $message = "❌ Quantité invalide.";
     } else {
-        // Calcul du total
+
         $total = ($service['rate'] / 1000) * $quantity;
 
-        // Vérifier les fonds
         if ($balance < $total) {
             $message = "❌ Fonds insuffisants. Solde actuel : $balance USD, coût : $total USD";
         } else {
-            // Passer la commande via l'API
             $orderResult = $api->order([
                 'service' => $serviceId,
                 'link' => $link,
                 'quantity' => $quantity
             ]);
 
-            // Enregistrer dans la DB
             $stmt2 = $pdo->prepare("
                 INSERT INTO orders (user_id, api_order_id, service_id, status, link, quantity, charge, start_count, remains, created_at)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
@@ -76,7 +67,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ]);
 
             $message = "✅ Commande passée avec succès ! Total : $total USD";
-            // Mettre à jour le solde local
             $balance -= $total;
         }
     }
@@ -145,7 +135,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-// Calcul dynamique du total
 const serviceSelect = document.getElementById('service_id');
 const quantityInput = document.getElementById('quantity');
 const totalDisplay = document.getElementById('totalDisplay');

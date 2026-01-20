@@ -10,7 +10,7 @@ try {
     $api = new Api();
     $allServices = $api->services() ?? [];
 
-    foreach($allServices as $s){
+    foreach ($allServices as $s) {
         $s = is_object($s) ? $s : (object)$s;
 
         $stmt = $pdo->prepare("

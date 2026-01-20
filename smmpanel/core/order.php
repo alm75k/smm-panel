@@ -3,7 +3,8 @@ require_once __DIR__ . '/../config/database.php'; // doit pointer sur le fichier
 require_once __DIR__ . '/api.php';
 
 
-function createOrder($userId, $serviceId, $link, $quantity) {
+function createOrder($userId, $serviceId, $link, $quantity)
+{
     global $pdo;
 
     $api = new Api();
@@ -30,15 +31,15 @@ function createOrder($userId, $serviceId, $link, $quantity) {
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ");
     $stmt->execute([
-        $userId,                  // user_id
-        $serviceId,               // service_id (pas service)
-        $link,                    // link
-        $quantity,                // quantity
-        'pending',                // status
-        $totalPrice,              // charge
-        0,                        // start_count
-        $quantity,                // remains
-        $service->currency ?? 'USD', // currency
-        null                      // error
+        $userId,
+        $serviceId,
+        $link,
+        $quantity,
+        'pending',
+        $totalPrice,
+        0,
+        $quantity,
+        $service->currency ?? 'USD',
+        null
     ]);
 }

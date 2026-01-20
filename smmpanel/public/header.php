@@ -2,7 +2,7 @@
   <div class="container">
     <a class="navbar-brand" href="dashboard.php">SMM Panel</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
@@ -18,7 +18,7 @@
           <a class="nav-link" href="orders.php">Commandes</a>
         </li>
         <li class="nav_item">
-            <a class="nav-link" href="add_funds.php">Funds</a>
+          <a class="nav-link" href="add_funds.php">Funds</a>
         </li>
         <li class="nav-item">
           <a class="nav-link text-danger" href="../auth/logout.php">Déconnexion</a>
